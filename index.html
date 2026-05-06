@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local AI Design Tool</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    button { padding: 10px 15px; margin: 5px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Local AI Design Tool - Testing</h1>
+  <p>Issue #2 - Multiple File Format Support</p>
+  
+  <hr>
+  
+  <h2>Test File Import / Export</h2>
+  <button onclick="testExport('json')">Export as JSON</button>
+  <button onclick="testExport('svg')">Export as SVG</button>
+  
+  <br><br>
+  
+  <input type="file" id="importFile" accept=".json,.svg" />
+  <button onclick="testImport()">Import Selected File</button>
+
+  <pre id="status" style="margin-top: 20px; background: #f0f0f0; padding: 10px;"></pre>
+
+    <script>
+    function log(msg) {
+      const status = document.getElementById('status');
+      status.textContent += msg + "\n";
+      status.scrollTop = status.scrollHeight;
+    }
+
+    function downloadFile(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // ====================== TEST EXPORT ======================
+    window.testExport = async function(format) {
+      try {
+        log(`Exporting as ${format.toUpperCase()}...`);
+
+        if (format === 'json') {
+          const data = {
+            name: "My Design",
+            created: new Date().toISOString(),
+            width: 800,
+            height: 600,
+            elements: [
+              { type: "text", content: "Hello World" }
+            ]
+          };
+
+          const jsonString = JSON.stringify(data, null, 2);
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          downloadFile(blob, 'design.json');
+          
+          log("✅ JSON Exported successfully! Check your Downloads folder");
+
+        } else if (format === 'svg') {
+          const svgContent = `<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#f8f9fa"/>
+            <text x="400" y="300" font-size="24" text-anchor="middle" fill="#333">Your Design Here</text>
+          </svg>`;
+
+          const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+          downloadFile(blob, 'design.svg');
+          
+          log("✅ SVG Exported successfully! Check your Downloads folder");
+        }
+      } catch(e) {
+        log(`❌ Export failed: ${e.message}`);
+        console.error(e);
+      }
+    };
+
+    // ====================== TEST IMPORT ======================
+    window.testImport = async function() {
+      const fileInput = document.getElementById('importFile');
+      const file = fileInput.files[0];
+      
+      if (!file) {
+        log("❌ Please select a file first");
+        return;
+      }
+
+      log(`Importing ${file.name}...`);
+
+      try {
+        const text = await file.text();
+        
+        if (file.name.endsWith('.json')) {
+          const data = JSON.parse(text);
+          log("✅ JSON Imported successfully!");
+          console.log("Imported Data:", data);
+        } 
+        else if (file.name.endsWith('.svg')) {
+          log("✅ SVG Imported successfully!");
+          console.log("SVG Content:", text);
+        }
+      } catch(e) {
+        log(`❌ Import failed: ${e.message}`);
+      }
+    };
+
+    // Auto start message
+    window.onload = function() {
+      log("✅ Test page is ready!");
+      log("Try clicking Export JSON / SVG and Import");
+    };
+  </script>
+</body>
+</html>
