@@ -3,12 +3,19 @@
 /**
  * Export design data to different formats
  */
-async function exportTo(data, format) {
+export async function exportTo(data, format) {
     if (!data) {
         throw new Error("No design data to export!");
     }
 
-    switch (format.toLowerCase()) {
+    // Added validation (Copilot suggestion improved)
+    if (typeof format !== 'string' || format.trim() === '') {
+        throw new Error("Export format must be a non-empty string (e.g., 'json' or 'svg')");
+    }
+
+    const normalizedFormat = format.toLowerCase();
+
+    switch (normalizedFormat) {
         case 'json':
             return exportToJSON(data);
 
@@ -16,7 +23,7 @@ async function exportTo(data, format) {
             return exportToSVG(data);
 
         default:
-            throw new Error(`Format ${format} is not supported yet.`);
+            throw new Error(`Format '${format}' is not supported yet. Supported formats: json, svg`);
     }
 }
 
