@@ -1,6 +1,7 @@
 import { design } from './design'
 import { ai } from './ai'
 import { ui } from './ui'
+import { exportTo, importFrom } from './utils/file.js';
 
 class LocalAiDesign {
   constructor() {
@@ -23,12 +24,66 @@ class LocalAiDesign {
 }
 
 class Design {
+  constructor() {
+    // Basic in-memory storage for the design
+    this.currentDesign = {
+      id: "design-" + Date.now(),
+      name: "Untitled Design",
+      elements: [],        // Will hold shapes, text, images etc. later
+      width: 800,
+      height: 600,
+      background: "#ffffff"
+    };
+  }
+
   async init() {
-    // Initialize design component
+    console.log("Design module initialized");
+    // We can load from localStorage later if needed
   }
 
   async getData() {
-    // Get design data
+    return this.currentDesign;
+  }
+
+  // ====================== NEW METHODS FOR FILE SUPPORT ======================
+
+  /**
+   * Export current design to JSON or SVG
+   */
+  async exportTo(format) {
+    try {
+      const data = await this.getData();
+      // Call the function from utils/file.js
+      return await exportTo(data, format);
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert("Export failed: " + error.message);
+    }
+  }
+
+  /**
+   * Import design from a file
+   */
+  async importFrom(file) {
+    try {
+      const importedData = await importFrom(file);
+      
+      if (importedData) {
+        // For JSON: replace current design
+        if (importedData.type === "svg") {
+          console.log("SVG import received (basic support for now)");
+          this.currentDesign.elements = [{ type: "svg", content: importedData.content }];
+        } else {
+          this.currentDesign = { ...this.currentDesign, ...importedData };
+        }
+        
+        console.log("Design imported successfully!");
+        return this.currentDesign;
+      }
+    } catch (error) {
+      console.error("Import failed:", error);
+      alert("Import failed: " + error.message);
+    }
   }
 }
 
