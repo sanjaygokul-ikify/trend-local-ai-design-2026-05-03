@@ -87,15 +87,21 @@ async function importFromJSON(file) {
 }
 
 async function importFromSVG(file) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const reader = new FileReader();
+        
         reader.onload = (e) => {
-            // For now just return the raw SVG text
             resolve({
                 type: "svg",
-                content: e.target.result
+                content: e.target.result,
+                name: file.name
             });
         };
+
+        reader.onerror = () => {
+            reject(new Error(`Failed to read SVG file: ${file.name}`));
+        };
+
         reader.readAsText(file);
     });
 }
