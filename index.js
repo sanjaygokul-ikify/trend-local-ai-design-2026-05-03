@@ -28,8 +28,14 @@ class LocalAiDesign {
   async run() {
     try {
       const designData = await this.design.getData()
+      if (!designData) {
+        throw new Error('Design data is empty or null');
+      }
       const aiSuggestions = await this.ai.getSuggestions(designData)
-      console.log("Application running")
+      if (!aiSuggestions || !Array.isArray(aiSuggestions)) {
+        throw new Error('AI suggestions are invalid');
+      }
+      await this.ui.render(aiSuggestions)
     } catch (error) {
       console.error('Runtime error:', error)
       throw error
