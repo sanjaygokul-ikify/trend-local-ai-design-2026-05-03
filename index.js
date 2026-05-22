@@ -45,7 +45,7 @@ class Design {
 
   async getData() {
     // Get design data
-    return Promise.resolve(); // Ensure getData() returns a promise
+    return Promise.resolve({}); // Ensure getData() returns a promise with a default value
   }
 }
 
