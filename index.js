@@ -30,7 +30,12 @@ class LocalAiDesign {
       if (!aiSuggestions || !Array.isArray(aiSuggestions) || aiSuggestions.length === 0) {
         throw new Error('AI suggestions are invalid or empty');
       }
-      await this.ui.render(aiSuggestions)
+      try {
+        await this.ui.render(aiSuggestions)
+      } catch (renderError) {
+        console.error('UI render error:', renderError)
+        // Log the error but continue to allow the application to recover
+      }
     } catch (error) {
       console.error('Runtime error:', error)
       throw error; // Rethrow the error to prevent silent failures
