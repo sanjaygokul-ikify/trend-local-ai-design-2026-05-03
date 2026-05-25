@@ -76,4 +76,9 @@ class Ui {
 }
 
 const localAiDesign = new LocalAiDesign()
-localAiDesign.init().then(() => localAiDesign.run())
+localAiDesign.init().then(() => {
+  localAiDesign.run().catch((error) => {
+    console.error('Application failed to run:', error)
+    process.exit(1); // Exit the process with a non-zero status code to indicate failure
+  })
+})
