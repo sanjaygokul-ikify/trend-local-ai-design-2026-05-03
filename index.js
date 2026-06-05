@@ -11,9 +11,7 @@ class LocalAiDesign {
 
   async init() {
     try {
-      await this.design.init()
-      await this.ai.init()
-      await this.ui.init()
+      await Promise.all([this.design.init(), this.ai.init(), this.ui.init()])
     } catch (error) {
       console.error('Initialization error:', error)
       throw error; // Rethrow the error to prevent silent failures
