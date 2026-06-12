@@ -81,4 +81,7 @@ localAiDesign.init().then(() => {
     throw error; // Rethrow the error to prevent silent failures and ensure it propagates
   })
 }
-)
+).catch((error) => {
+  console.error('Initialization failed:', error)
+  process.exit(1); // Exit the process with a non-zero status code to indicate failure
+})
