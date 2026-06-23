@@ -73,6 +73,31 @@ class Ui {
   }
 }
 
+class Design {
+  async getData() {
+    try {
+      // Try getting the data from a cache
+      const cachedData = global.designCache;
+      if (cachedData) {
+        return Promise.resolve(cachedData);
+      }
+      // Otherwise get the data and cache it
+      const data = await this._getDataFromSource();
+      global.designCache = data;
+      return data;
+    } catch (error) {
+      console.error('Error fetching design data:', error)
+      throw error;
+    }
+  }
+
+  async _getDataFromSource() {
+    // This method would replace the original getData method
+    // For now, just return an empty object as before
+    return Promise.resolve({});
+  }
+}
+
 const localAiDesign = new LocalAiDesign()
 localAiDesign.init().then(() => {
   localAiDesign.run().catch((error) => {
