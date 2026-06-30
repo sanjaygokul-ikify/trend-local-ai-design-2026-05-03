@@ -94,7 +94,11 @@ class Design {
   async _getDataFromSource() {
     // This method would replace the original getData method
     // For now, just return an empty object as before
-    return Promise.resolve({});
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    this.data = {};
+    return Promise.resolve(this.data);
   }
 }
 
