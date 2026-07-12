@@ -102,6 +102,14 @@ class Design {
   }
 }
 
+class LocalAiDesign {
+  // Add a method to clear design cache for data refresh
+  async refreshDesignCache() {
+    this.design.data = null;
+    global.designCache = null;
+  }
+}
+
 const localAiDesign = new LocalAiDesign()
 localAiDesign.init().then(() => {
   localAiDesign.run().catch((error) => {
