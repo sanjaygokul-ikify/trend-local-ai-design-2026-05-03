@@ -39,6 +39,11 @@ class LocalAiDesign {
       throw error; // Rethrow the error to prevent silent failures
     }
   }
+
+  async refreshDesignCache() {
+    this.design.data = null;
+    global.designCache = null;
+  }
 }
 
 class Design {
@@ -47,8 +52,28 @@ class Design {
   }
 
   async getData() {
-    // Get design data
-    return Promise.resolve({}); // Ensure getData() returns a promise with a default value
+    try {
+      // Try getting the data from a cache
+      const cachedData = global.designCache;
+      if (cachedData) {
+        return Promise.resolve(cachedData);
+      }
+      // Otherwise get the data and cache it
+      const data = await this._getDataFromSource();
+      global.designCache = data;
+      return data;
+    } catch (error) {
+      console.error('Error fetching design data:', error)
+      throw error;
+    }
+  }
+
+  async _getDataFromSource() {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    this.data = {};
+    return Promise.resolve(this.data);
   }
 }
 
@@ -70,43 +95,6 @@ class Ui {
 
   async render(suggestions) {
     // Render UI with AI suggestions
-  }
-}
-
-class Design {
-  async getData() {
-    try {
-      // Try getting the data from a cache
-      const cachedData = global.designCache;
-      if (cachedData) {
-        return Promise.resolve(cachedData);
-      }
-      // Otherwise get the data and cache it
-      const data = await this._getDataFromSource();
-      global.designCache = data;
-      return data;
-    } catch (error) {
-      console.error('Error fetching design data:', error)
-      throw error;
-    }
-  }
-
-  async _getDataFromSource() {
-    // This method would replace the original getData method
-    // For now, just return an empty object as before
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
-    this.data = {};
-    return Promise.resolve(this.data);
-  }
-}
-
-class LocalAiDesign {
-  // Add a method to clear design cache for data refresh
-  async refreshDesignCache() {
-    this.design.data = null;
-    global.designCache = null;
   }
 }
 
