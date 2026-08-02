@@ -61,6 +61,7 @@ class Design {
       // Otherwise get the data and cache it
       const data = await this._getDataFromSource();
       global.designCache = data;
+      this.data = data;
       return data;
     } catch (error) {
       console.error('Error fetching design data:', error)
